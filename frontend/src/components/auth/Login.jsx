@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Navbar } from '../shared/Navbar'
 import { Label } from "../ui/label"
 import { Input } from "../ui/input"
@@ -9,12 +9,13 @@ import { toast } from 'sonner'
 import axios from 'axios'
 import { USER_API_END_POINT } from '../../utils/constant'
 import { useDispatch, useSelector } from 'react-redux'
-import { setLoading } from '@/redux/authSlice'
+import { setLoading, setUser } from '@/redux/authSlice'
 import { Loader2 } from 'lucide-react'
 
 export const Login = () => {
 
   const dispatch = useDispatch();
+  const { user } = useSelector(state => state.auth);
 
   const [input, setInput] = useState({
     email: "",
@@ -39,6 +40,7 @@ export const Login = () => {
         withCredentials: true,
       });
       if (response.data.success) {
+        dispatch(setUser(response.data.user));
         navigate("/");
         toast.success(response.data.message);
       }
@@ -50,11 +52,17 @@ export const Login = () => {
     }
   }
 
+  useEffect(() => {
+    if (user) {
+      navigate("/");
+    }
+  }, [])
+
   return (
     <div>
       <Navbar />
       <div className='flex items-center max-w-7xl justify-center mx-auto'>
-        <form onSubmit={submitHandler} className='w-1/2 border border-gray-200 rounded-md p-4 my-10'>
+        <form onSubmit={submitHandler} className='md:w-1/2 border border-gray-200 rounded-md p-4 my-10'>
           <h1 className='font-bold text-xl mb-5'>Login</h1>
           <div className='my-2'>
             <Label>Email</Label>

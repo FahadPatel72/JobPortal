@@ -31,7 +31,7 @@ export const applyJob = async (req, res) => {
         if (!job) {
             return res.status(404).json({
                 success: false,
-                message: "Job not found"
+                message: "Job already exist"
             })
         }
 
@@ -59,6 +59,7 @@ export const applyJob = async (req, res) => {
     }
 }
 
+//user side
 export const getAppliedJob = async (req, res) => {
 
     try {

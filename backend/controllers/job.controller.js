@@ -5,7 +5,7 @@ import Job from "../models/job.model.js";
 export const postJob = async (req, res) => {
 
     try {
-        const { title, description,requirements, salary, location, jobType, experienceLevel, position, companyId } = req.body;
+        const { title, description, requirements, salary, location, jobType, experienceLevel, position, companyId } = req.body;
 
         const userId = req.user.id;
 
@@ -17,7 +17,7 @@ export const postJob = async (req, res) => {
         }
 
         const job = await Job.create({
-            title, description, salary, location, jobType, experienceLevel, position, company:companyId, createdBy: userId,
+            title, description, salary, location,requirements , jobType, experienceLevel, position, company: companyId, createdBy: userId,
         })
 
         return res.status(201).json({
@@ -29,6 +29,7 @@ export const postJob = async (req, res) => {
         console.log(error);
         return res.status(500).json({
             success: false,
+            job,
             message: "Internal Server Error",
         })
     }
@@ -77,9 +78,11 @@ export const getJobById = async (req, res) => {
 
     try {
         const jobId = req.params.id.trim();
-        
-        const job = await Job.findById(jobId);
-        
+
+        const job = await Job.findById(jobId).populate({
+            path: "applicants"
+        });
+
 
         if (!job) {
             return res.status(404).json({
@@ -108,10 +111,13 @@ export const getAdminJobs = async (req, res) => {
 
     try {
         const adminId = req.user.id;
-        
-        const jobs = await Job.find({createdBy:adminId});
 
-        if(!jobs){
+        const jobs = await Job.find({ createdBy: adminId }).populate({
+            path: 'company',
+            createdAt: -1
+        });
+
+        if (!jobs) {
             return res.status(404).json({
                 success: false,
                 message: "Job not found",
@@ -120,7 +126,7 @@ export const getAdminJobs = async (req, res) => {
 
         return res.status(200).json({
             jobs,
-            success:true,
+            success: true,
         })
 
 

@@ -1,13 +1,14 @@
 import User from "../models/user.model.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
+import getDataUri from "../utils/dataUri.js";
+import cloudinary from "../utils/cloudinary.js";
 
 
 export const registerUser = async (req, res) => {
 
     try {
         const { fullName, email, phoneNumber, password, role } = req.body;
-        
 
         if (!fullName || !email || !password || !role || !phoneNumber) {
             return res.status(400).json({
@@ -15,6 +16,12 @@ export const registerUser = async (req, res) => {
                 success: false
             });
         }
+
+        const file = req.file;
+        const fileUri = getDataUri(file);
+
+        const cloudResponse = await cloudinary.uploader.upload(fileUri.content);
+
 
         const existingUser = await User.findOne({ email });
 
@@ -32,7 +39,10 @@ export const registerUser = async (req, res) => {
             email,
             phoneNumber,
             password: hashedPassword,
-            role
+            role,
+            profile:{
+                profilePhoto:cloudResponse.secure_url
+            }
         });
 
         return res.status(200).json({
@@ -62,8 +72,8 @@ export const login = async (req, res) => {
             });
         }
 
-        let user = await User.findOne({email});
-        
+        let user = await User.findOne({ email });
+
 
         if (!user) {
             return res.status(401).json({
@@ -91,14 +101,14 @@ export const login = async (req, res) => {
 
         const tokenData = {
             id: user._id,
-            role:user.role,
+            role: user.role,
         }
 
         const token = await jwt.sign(tokenData, process.env.SECRET_KEY, { expiresIn: '1d' });
 
         user = {
             id: user._id,
-            fullName:user.fullName,
+            fullName: user.fullName,
             password: user.password,
             email: user.email,
             phoneNumber: user.phoneNumber,
@@ -143,18 +153,25 @@ export const updateProfile = async (req, res) => {
     try {
 
         const { fullName, email, phoneNumber, bio, skills } = req.body;
+
         const file = req.file;
 
-        let skillsArray;
+        //cloudinary setup
+        const fileUri = getDataUri(file);
+
+        const cloudResponse = await cloudinary.uploader.upload(fileUri.content);
+      
+
+        let skillsArray = [];
         if (skills) {
-            skillsArray = skills.split(",");
+            skillsArray = skills.split(",").map(obj => obj.trim().toUpperCase());
         }
 
         //from authenticated route
         const userId = req.user.id;
-    
+
         let user = await User.findById(userId);
-       
+
 
         if (!user) {
             return res.status(400).json({
@@ -163,17 +180,24 @@ export const updateProfile = async (req, res) => {
             })
         }
 
+        //updating
         if (fullName) user.fullName = fullName;
         if (email) user.email = email;
         if (phoneNumber) user.phoneNumber = phoneNumber;
         if (bio) user.profile.bio = bio;
-        if (skills) user.profile.skills = skills;
+        if (skillsArray.length) user.profile.skills = skillsArray;
+
+        //resume comes letter here
+        if (cloudResponse) {
+            user.profile.resume = cloudResponse.secure_url;   //save the cloudinary url
+            user.profile.resumeOriginalName = file.originalname; //save the original file name
+        }
 
         await user.save();
 
         user = {
             id: user._id,
-            fullName:user.fullName,
+            fullName: user.fullName,
             password: user.password,
             email: user.email,
             phoneNumber: user.phoneNumber,
@@ -183,9 +207,9 @@ export const updateProfile = async (req, res) => {
 
 
         return res.status(200).json({
-            message:"Profile updated successfull",
+            message: "Profile updated successfull",
             user,
-            success:true,
+            success: true,
         })
 
     } catch (error) {
