@@ -18,6 +18,8 @@ export const registerUser = async (req, res) => {
         }
 
         const file = req.file;
+        // console.log(file);
+        
         const fileUri = getDataUri(file);
 
         const cloudResponse = await cloudinary.uploader.upload(fileUri.content);
