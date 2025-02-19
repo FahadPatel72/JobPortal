@@ -19,7 +19,7 @@ export const registerUser = async (req, res) => {
 
         const file = req.file;
         // console.log(file);
-        
+
         const fileUri = getDataUri(file);
 
         const cloudResponse = await cloudinary.uploader.upload(fileUri.content);
@@ -42,8 +42,8 @@ export const registerUser = async (req, res) => {
             phoneNumber,
             password: hashedPassword,
             role,
-            profile:{
-                profilePhoto:cloudResponse.secure_url
+            profile: {
+                profilePhoto: cloudResponse.secure_url
             }
         });
 
@@ -118,11 +118,19 @@ export const login = async (req, res) => {
             profile: user.profile,
         }
 
-        return res.status(200).cookie("token", token, { maxAge: 1 * 24 * 60 * 60 * 1000, httpOnly: true, sameSite: 'strict' }).json({
-            message: `Welcome back ${user.fullName}`,
-            user,
-            success: true,
-        })
+        return res.status(200)
+            .cookie("token", token, {
+                maxAge: 1 * 24 * 60 * 60 * 1000, // 1 day
+                httpOnly: true,
+                secure: true, // ✅ Required for HTTPS (Netlify & Render use HTTPS)
+                sameSite: "None" // ✅ Allows cross-origin cookies
+            })
+            .json({
+                message: `Welcome back ${user.fullName}`,
+                user,
+                success: true,
+            });
+
 
 
     } catch (error) {
@@ -162,7 +170,7 @@ export const updateProfile = async (req, res) => {
         const fileUri = getDataUri(file);
 
         const cloudResponse = await cloudinary.uploader.upload(fileUri.content);
-      
+
 
         let skillsArray = [];
         if (skills) {
