@@ -16,6 +16,8 @@ const app = express();
 const corsOptions = {
     origin: ['https://jobportal72.netlify.app/'], // Allow requests from this origin
     credentials: true, // Allow credentials (cookies, authorization headers, etc.)
+    methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+    allowedHeaders: "Origin, X-Requested-With, Content-Type, Accept, Authorization",
 };
 app.use(cors(corsOptions));
 
