@@ -24,6 +24,7 @@ export const FilterCard = () => {
     const dispatch = useDispatch();
 
     const changeHandler = (value) => {
+        console.log(value);
         setSelectedValue(value);
     }
     useEffect(() => {
