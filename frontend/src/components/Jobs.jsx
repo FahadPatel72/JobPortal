@@ -20,17 +20,17 @@ export const Jobs = () => {
                         job?.location?.toLowerCase().includes(searchQuery.toLowerCase())
                 })
                 if (searchQuery.includes('---')) {
+                    const [minimumSalary, maximumSalary] = searchQuery.split('---')
                     filteredJobs = allJobs.filter((job) => {
                         return job?.salary >= Number(minimumSalary) && job?.salary <= Number(maximumSalary)
                     })
                 }
-                console.log(filterJobs);
+                console.log({ filteredJobs });
                 setFilterJobs(filteredJobs);
             } else {
                 setFilterJobs(allJobs);
             }
         } catch (e) {
-            console.log('Error in Filter', e)
             setFilterJobs(allJobs);
         }
     }, [allJobs, searchQuery])
