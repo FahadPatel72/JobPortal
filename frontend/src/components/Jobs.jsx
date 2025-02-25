@@ -25,7 +25,6 @@ export const Jobs = () => {
                         return job?.salary >= Number(minimumSalary) && job?.salary <= Number(maximumSalary)
                     })
                 }
-                console.log({ filteredJobs });
                 setFilterJobs(filteredJobs);
             } else {
                 setFilterJobs(allJobs);
