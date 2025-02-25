@@ -25,9 +25,9 @@ const filterData = [
     {
         filterType: "Salary",
         array: [
-            { value: "1---10", label: "0-40k" },
-            { value: "10---20", label: "42k-1lakh" },
-            { value: "20---50", label: "1lakh to 5lakh" },
+            { value: "1---10", label: "1lakh to 10lakh" },
+            { value: "10---20", label: "10lakh to 20lakh" },
+            { value: "20---50", label: "20lakh to 50lakh" },
         ]
     },
 ]
@@ -38,7 +38,6 @@ export const FilterCard = () => {
     const dispatch = useDispatch();
 
     const changeHandler = (value) => {
-        console.log(value);
         setSelectedValue(value);
     }
     useEffect(() => {

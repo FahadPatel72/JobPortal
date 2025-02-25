@@ -14,6 +14,8 @@ export const Jobs = () => {
     useEffect(() => {
         try {
             if (searchQuery) {
+                console.log({searchQuery, test: searchQuery.includes('---'), allJobs});
+                
                 let filteredJobs = allJobs.filter((job) => {
                     return job?.title?.toLowerCase().includes(searchQuery.toLowerCase()) ||
                         job?.description?.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -21,10 +23,13 @@ export const Jobs = () => {
                 })
                 if (searchQuery.includes('---')) {
                     const [minimumSalary, maximumSalary] = searchQuery.split('---')
+                    console.log({minimumSalary,maximumSalary});
+                    
                     filteredJobs = filteredJobs.filter((job) => {
                         return job?.salary >= Number(minimumSalary) && job?.salary <= Number(maximumSalary)
                     })
                 }
+                console.log({filteredJobs});
                 setFilterJobs(filteredJobs);
             } else {
                 setFilterJobs(allJobs);
