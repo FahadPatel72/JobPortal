@@ -12,16 +12,24 @@ export const Jobs = () => {
     const [filterJobs, setFilterJobs] = useState(allJobs);
 
     useEffect(() => {
-        if (searchQuery) {
-            console.log({allJobs,searchQuery});
-            
-            const filteredJobs = allJobs.filter((job) => {
-                return job?.title?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                    job?.description?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                    job?.location?.toLowerCase().includes(searchQuery.toLowerCase())
-            })
-            setFilterJobs(filteredJobs);
-        } else {
+        try {
+            if (searchQuery) {
+                let filteredJobs = allJobs.filter((job) => {
+                    return job?.title?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                        job?.description?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                        job?.location?.toLowerCase().includes(searchQuery.toLowerCase())
+                })
+                if (searchQuery.includes('---')) {
+                    const [minimumSalary, maximumSalary] = searchQuery.split('---')
+                    filteredJobs = filteredJobs.filter((job) => {
+                        return job?.salary >= Number(minimumSalary) && job?.salary <= Number(maximumSalary)
+                    })
+                }
+                setFilterJobs(filteredJobs);
+            } else {
+                setFilterJobs(allJobs);
+            }
+        } catch (e) {
             setFilterJobs(allJobs);
         }
     }, [allJobs, searchQuery])
