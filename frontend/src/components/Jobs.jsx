@@ -8,10 +8,13 @@ import { motion } from 'framer-motion';
 export const Jobs = () => {
 
     const { allJobs, searchQuery } = useSelector(state => state.job);
+
     const [filterJobs, setFilterJobs] = useState(allJobs);
 
     useEffect(() => {
         if (searchQuery) {
+            console.log({allJobs,searchQuery});
+            
             const filteredJobs = allJobs.filter((job) => {
                 return job?.title?.toLowerCase().includes(searchQuery.toLowerCase()) ||
                     job?.description?.toLowerCase().includes(searchQuery.toLowerCase()) ||
