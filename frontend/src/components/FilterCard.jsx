@@ -6,15 +6,29 @@ import { setSearchQuery } from '../redux/jobSlice'
 const filterData = [
     {
         filterType: "Location",
-        array: ["Delhi NCR", "Bangalore", "Hyderabad", "Pune", "Mumbai"]
+        array: [
+            { value: "Delhi NCR", label: "Delhi NCR" },
+            { value: "Bangalore", label: "Bangalore" },
+            { value: "Hyderabad", label: "Hyderabad" },
+            { value: "Pune", label: "Pune" },
+            { value: "Mumbai", label: "Mumbai" },
+        ]
     },
     {
         filterType: "Industry",
-        array: ["Frontend Developer", "Backend Developer", "Full Stack Developer"]
+        array: [
+            { value: "Frontend Developer", label: "Frontend Developer" },
+            { value: "Backend Developer", label: "Backend Developer" },
+            { value: "Full Stack Developer", label: "Full Stack Developer" },
+        ]
     },
     {
         filterType: "Salary",
-        array: ["0-40k", "42k-1lakh", "1lakh to 5lakh"]
+        array: [
+            { value: "0---0.4", label: "0-40k" },
+            { value: "0.42---1", label: "42k-1lakh" },
+            { value: "1---5", label: "1lakh to 5lakh" },
+        ]
     },
 ]
 
@@ -44,8 +58,8 @@ export const FilterCard = () => {
                                     const itemId = `r${index}-${idx}`
                                     return (
                                         <div key={itemId} className='flex items-center space-x-2 my-2'>
-                                            <RadioGroupItem value={item} id={itemId} />
-                                            <label htmlFor={itemId}>{item}</label>
+                                            <RadioGroupItem value={item.value} id={itemId} />
+                                            <label htmlFor={itemId}>{item.label}</label>
                                         </div>
                                     )
                                 })
