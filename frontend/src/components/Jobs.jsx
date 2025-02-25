@@ -30,6 +30,7 @@ export const Jobs = () => {
                 setFilterJobs(allJobs);
             }
         } catch (e) {
+            console.log('Error in Filter', e)
             setFilterJobs(allJobs);
         }
     }, [allJobs, searchQuery])
