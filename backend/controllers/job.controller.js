@@ -17,11 +17,12 @@ export const postJob = async (req, res) => {
         }
 
         const job = await Job.create({
-            title, description, salary, location,requirements , jobType, experienceLevel, position, company: companyId, createdBy: userId,
+            title, description, salary, location, requirements, jobType, experienceLevel, position, company: companyId, createdBy: userId,
         })
 
         return res.status(201).json({
             success: true,
+            job,
             message: "New Job Created Successfully",
         })
 
@@ -29,7 +30,6 @@ export const postJob = async (req, res) => {
         console.log(error);
         return res.status(500).json({
             success: false,
-            job,
             message: "Internal Server Error",
         })
     }
@@ -82,7 +82,6 @@ export const getJobById = async (req, res) => {
         const job = await Job.findById(jobId).populate({
             path: "applicants"
         });
-
 
         if (!job) {
             return res.status(404).json({

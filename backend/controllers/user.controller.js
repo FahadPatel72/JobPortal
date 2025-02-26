@@ -18,12 +18,10 @@ export const registerUser = async (req, res) => {
         }
 
         const file = req.file;
-        // console.log(file);
 
         const fileUri = getDataUri(file);
 
         const cloudResponse = await cloudinary.uploader.upload(fileUri.content);
-
 
         const existingUser = await User.findOne({ email });
 
@@ -130,9 +128,6 @@ export const login = async (req, res) => {
                 user,
                 success: true,
             });
-
-
-
     } catch (error) {
         console.log(error);
         return res.status(500).json({
@@ -143,7 +138,6 @@ export const login = async (req, res) => {
 }
 
 export const logout = async (req, res) => {
-
     try {
         return res.status(200).cookie("token", "", { maxAge: 0 }).json({
             message: "Logout Successfull",
@@ -182,7 +176,6 @@ export const updateProfile = async (req, res) => {
 
         let user = await User.findById(userId);
 
-
         if (!user) {
             return res.status(400).json({
                 message: "User does't exist",
@@ -214,7 +207,6 @@ export const updateProfile = async (req, res) => {
             role: user.role,
             profile: user.profile,
         }
-
 
         return res.status(200).json({
             message: "Profile updated successfull",
